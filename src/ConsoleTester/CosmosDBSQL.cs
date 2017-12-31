@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 
@@ -10,32 +9,16 @@ namespace ConsoleTester
     {
 
         const string EndPoint = "https://cosmossqltest.documents.azure.com:443/";
-        const string AuthKey = "";
+        const string AuthKey = "==";
         const string DatabaseId = "CustomerDB";
         const string CollectionId = "Customers";
 
-        public async void InsertAsync()
+        public async Task<ResourceResponse<Document>> InsertAsync(Models.Customer customer)
         {
-            try
+            using (var client = new DocumentClient(new Uri(EndPoint), AuthKey))
             {
-                using (var client = new DocumentClient(new Uri(EndPoint), AuthKey))
-                {
-                    var customer = new Models.Customer
-                    {
-                        CustomerId = 1,
-                        FirstName = "Jack",
-                        LastName = "Smith"
-                    };
-
-                    var collectionLink = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
-                    var asdf = client.CreateDocumentAsync(collectionLink, customer).Result;
-
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw;
+                var collectionLink = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+                return await client.CreateDocumentAsync(collectionLink, customer);
             }
         }
 

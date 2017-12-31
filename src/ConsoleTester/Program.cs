@@ -12,7 +12,21 @@ namespace ConsoleTester
         {
 
             var cosmosDB = new CosmosDBSQL();
-            cosmosDB.InsertAsync();
+
+            var tasks = new List<Task>();
+
+            for (int i = 1; i < 6; i++)
+            {
+                tasks.Add(cosmosDB.InsertAsync(new Models.Customer
+                {
+                    CustomerId = i,
+                    FirstName = "Jack",
+                    LastName = "Smith"
+                }));
+            }
+
+            Task.WaitAll(tasks.ToArray());
+
 
         }
     }
